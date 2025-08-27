@@ -1,51 +1,65 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Lock, Shield, CheckCircle, ArrowRight, Building2, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Lock,
+  Shield,
+  CheckCircle,
+  ArrowRight,
+  Building2,
+  Loader2,
+} from "lucide-react";
 
 // Type for bank information
 interface BankInfo {
-  bankName: string
-  branchName: string
-  accountHolderName: string
-  accountNumber: string
-  accountType: string
-  balance: string
+  bankName: string;
+  branchName: string;
+  accountHolderName: string;
+  accountNumber: string;
+  accountType: string;
+  balance: string;
 }
 
 // Type for form data
 interface FormData {
-  bankName: string
-  accountNumber: string
-  confirmAccountNumber: string
-  ifscCode: string
-  accountHolderName: string
+  bankName: string;
+  accountNumber: string;
+  confirmAccountNumber: string;
+  ifscCode: string;
+  accountHolderName: string;
 }
 
 // Type for verification result
 type VerificationResult =
   | { success: true; data: BankInfo }
   | { success: false; error: string }
-  | null
+  | null;
 
 export default function ConnectBankPage() {
-  const [isElderMode, setIsElderMode] = useState(false)
-  const [currentLanguage, setCurrentLanguage] = useState("en")
-  const [currentStep, setCurrentStep] = useState(1)
-  const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<VerificationResult>(null)
+  const [isElderMode, setIsElderMode] = useState(false);
+  const [currentLanguage, Language] = useState("en");
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationResult, setVerificationResult] =
+    useState<VerificationResult>(null);
   const [formData, setFormData] = useState<FormData>({
     bankName: "",
     accountNumber: "",
     confirmAccountNumber: "",
     ifscCode: "",
     accountHolderName: "",
-  })
+  });
 
   const bankData: Record<string, BankInfo> = {
     SBIN0001234: {
@@ -72,7 +86,7 @@ export default function ConnectBankPage() {
       accountType: "Savings Account",
       balance: "₹75,000",
     },
-  }
+  };
 
   const banks: string[] = [
     "State Bank of India",
@@ -83,68 +97,86 @@ export default function ConnectBankPage() {
     "Bank of Baroda",
     "Canara Bank",
     "Union Bank of India",
-  ]
+  ];
 
   const steps = [
-    { number: 1, title: "Bank Details", description: "Enter your bank information" },
-    { number: 2, title: "Verification", description: "Verify your account details" },
-    { number: 3, title: "Security", description: "Set up security preferences" },
-  ]
+    {
+      number: 1,
+      title: "Bank Details",
+      description: "Enter your bank information",
+    },
+    {
+      number: 2,
+      title: "Verification",
+      description: "Verify your account details",
+    },
+    {
+      number: 3,
+      title: "Security",
+      description: "Set up security preferences",
+    },
+  ];
 
   const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const simulateBankVerification = async () => {
-    setIsVerifying(true)
+    setIsVerifying(true);
 
     // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const bankInfo = bankData[formData.ifscCode]
+    const bankInfo = bankData[formData.ifscCode];
 
     if (bankInfo && formData.accountNumber === bankInfo.accountNumber) {
       setVerificationResult({
         success: true,
         data: bankInfo,
-      })
+      });
     } else {
       setVerificationResult({
         success: false,
-        error: "Account details could not be verified. Please check your IFSC code and account number.",
-      })
+        error:
+          "Account details could not be verified. Please check your IFSC code and account number.",
+      });
     }
 
-    setIsVerifying(false)
-  }
+    setIsVerifying(false);
+  };
 
   const handleNextStep = async () => {
     if (currentStep === 1) {
       // Validate form before proceeding
-      if (!formData.bankName || !formData.accountNumber || !formData.ifscCode || !formData.accountHolderName) {
-        alert("Please fill in all required fields")
-        return
+      if (
+        !formData.bankName ||
+        !formData.accountNumber ||
+        !formData.ifscCode ||
+        !formData.accountHolderName
+      ) {
+        alert("Please fill in all required fields");
+        return;
       }
 
       if (formData.accountNumber !== formData.confirmAccountNumber) {
-        alert("Account numbers do not match")
-        return
+        alert("Account numbers do not match");
+        return;
       }
 
-      await simulateBankVerification()
+      await simulateBankVerification();
     }
 
     if (currentStep < 3) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-      setVerificationResult(null)
+      setCurrentStep(currentStep - 1);
+      setVerificationResult(null);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -154,14 +186,27 @@ export default function ConnectBankPage() {
           <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
               <div className="bg-primary/10 p-4 rounded-full">
-                <Building2 className={`text-primary ${isElderMode ? "h-16 w-16" : "h-12 w-12"}`} />
+                <Building2
+                  className={`text-primary ${
+                    isElderMode ? "h-16 w-16" : "h-12 w-12"
+                  }`}
+                />
               </div>
             </div>
-            <h1 className={`font-bold text-foreground mb-4 ${isElderMode ? "text-5xl" : "text-3xl md:text-4xl"}`}>
+            <h1
+              className={`font-bold text-foreground mb-4 ${
+                isElderMode ? "text-5xl" : "text-3xl md:text-4xl"
+              }`}
+            >
               Connect Your Bank Account
             </h1>
-            <p className={`text-muted-foreground max-w-2xl mx-auto ${isElderMode ? "text-xl" : "text-lg"}`}>
-              Securely link your bank account to start using SafePay's advanced features
+            <p
+              className={`text-muted-foreground max-w-2xl mx-auto ${
+                isElderMode ? "text-xl" : "text-lg"
+              }`}
+            >
+              Securely link your bank account to start using SafePay's advanced
+              features
             </p>
           </div>
 
@@ -180,22 +225,36 @@ export default function ConnectBankPage() {
                         } ${isElderMode ? "w-16 h-16 text-lg" : ""}`}
                       >
                         {currentStep > step.number ? (
-                          <CheckCircle className={isElderMode ? "h-8 w-8" : "h-5 w-5"} />
+                          <CheckCircle
+                            className={isElderMode ? "h-8 w-8" : "h-5 w-5"}
+                          />
                         ) : (
                           step.number
                         )}
                       </div>
                       <div className="mt-2 text-center">
-                        <div className={`font-medium text-foreground ${isElderMode ? "text-lg" : "text-sm"}`}>
+                        <div
+                          className={`font-medium text-foreground ${
+                            isElderMode ? "text-lg" : "text-sm"
+                          }`}
+                        >
                           {step.title}
                         </div>
-                        <div className={`text-muted-foreground ${isElderMode ? "text-base" : "text-xs"}`}>
+                        <div
+                          className={`text-muted-foreground ${
+                            isElderMode ? "text-base" : "text-xs"
+                          }`}
+                        >
                           {step.description}
                         </div>
                       </div>
                     </div>
                     {index < steps.length - 1 && (
-                      <ArrowRight className={`text-muted-foreground mx-4 ${isElderMode ? "h-6 w-6" : "h-4 w-4"}`} />
+                      <ArrowRight
+                        className={`text-muted-foreground mx-4 ${
+                          isElderMode ? "h-6 w-6" : "h-4 w-4"
+                        }`}
+                      />
                     )}
                   </div>
                 ))}
@@ -206,8 +265,16 @@ export default function ConnectBankPage() {
           {/* Main Form Card */}
           <Card className="border-border shadow-lg bg-card/50 backdrop-blur">
             <CardHeader className={isElderMode ? "p-8" : ""}>
-              <CardTitle className={`flex items-center gap-3 ${isElderMode ? "text-2xl" : "text-xl"}`}>
-                <Lock className={`text-primary ${isElderMode ? "h-8 w-8" : "h-6 w-6"}`} />
+              <CardTitle
+                className={`flex items-center gap-3 ${
+                  isElderMode ? "text-2xl" : "text-xl"
+                }`}
+              >
+                <Lock
+                  className={`text-primary ${
+                    isElderMode ? "h-8 w-8" : "h-6 w-6"
+                  }`}
+                />
                 Step {currentStep}: {steps[currentStep - 1].title}
               </CardTitle>
             </CardHeader>
@@ -216,16 +283,32 @@ export default function ConnectBankPage() {
                 <div className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="bankName" className={isElderMode ? "text-lg" : ""}>
+                      <Label
+                        htmlFor="bankName"
+                        className={isElderMode ? "text-lg" : ""}
+                      >
                         Select Your Bank *
                       </Label>
-                      <Select value={formData.bankName} onValueChange={(value) => handleInputChange("bankName", value)}>
-                        <SelectTrigger className={`${isElderMode ? "h-14 text-lg" : ""} bg-background/50`}>
+                      <Select
+                        value={formData.bankName}
+                        onValueChange={(value) =>
+                          handleInputChange("bankName", value)
+                        }
+                      >
+                        <SelectTrigger
+                          className={`${
+                            isElderMode ? "h-14 text-lg" : ""
+                          } bg-background/50`}
+                        >
                           <SelectValue placeholder="Choose your bank" />
                         </SelectTrigger>
                         <SelectContent>
                           {banks.map((bank) => (
-                            <SelectItem key={bank} value={bank} className={isElderMode ? "text-lg py-3" : ""}>
+                            <SelectItem
+                              key={bank}
+                              value={bank}
+                              className={isElderMode ? "text-lg py-3" : ""}
+                            >
                               {bank}
                             </SelectItem>
                           ))}
@@ -234,60 +317,98 @@ export default function ConnectBankPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="accountHolderName" className={isElderMode ? "text-lg" : ""}>
+                      <Label
+                        htmlFor="accountHolderName"
+                        className={isElderMode ? "text-lg" : ""}
+                      >
                         Account Holder Name *
                       </Label>
                       <Input
                         id="accountHolderName"
                         value={formData.accountHolderName}
-                        onChange={(e) => handleInputChange("accountHolderName", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("accountHolderName", e.target.value)
+                        }
                         placeholder="Enter full name as per bank records"
-                        className={`${isElderMode ? "h-14 text-lg" : ""} bg-background/50`}
+                        className={`${
+                          isElderMode ? "h-14 text-lg" : ""
+                        } bg-background/50`}
                       />
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="accountNumber" className={isElderMode ? "text-lg" : ""}>
+                      <Label
+                        htmlFor="accountNumber"
+                        className={isElderMode ? "text-lg" : ""}
+                      >
                         Account Number *
                       </Label>
                       <Input
                         id="accountNumber"
                         type="password"
                         value={formData.accountNumber}
-                        onChange={(e) => handleInputChange("accountNumber", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("accountNumber", e.target.value)
+                        }
                         placeholder="Enter your account number"
-                        className={`${isElderMode ? "h-14 text-lg" : ""} bg-background/50`}
+                        className={`${
+                          isElderMode ? "h-14 text-lg" : ""
+                        } bg-background/50`}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="confirmAccountNumber" className={isElderMode ? "text-lg" : ""}>
+                      <Label
+                        htmlFor="confirmAccountNumber"
+                        className={isElderMode ? "text-lg" : ""}
+                      >
                         Confirm Account Number *
                       </Label>
                       <Input
                         id="confirmAccountNumber"
                         value={formData.confirmAccountNumber}
-                        onChange={(e) => handleInputChange("confirmAccountNumber", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "confirmAccountNumber",
+                            e.target.value
+                          )
+                        }
                         placeholder="Re-enter your account number"
-                        className={`${isElderMode ? "h-14 text-lg" : ""} bg-background/50`}
+                        className={`${
+                          isElderMode ? "h-14 text-lg" : ""
+                        } bg-background/50`}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="ifscCode" className={isElderMode ? "text-lg" : ""}>
+                    <Label
+                      htmlFor="ifscCode"
+                      className={isElderMode ? "text-lg" : ""}
+                    >
                       IFSC Code *
                     </Label>
                     <Input
                       id="ifscCode"
                       value={formData.ifscCode}
-                      onChange={(e) => handleInputChange("ifscCode", e.target.value.toUpperCase())}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "ifscCode",
+                          e.target.value.toUpperCase()
+                        )
+                      }
                       placeholder="Enter IFSC code (e.g., SBIN0001234, HDFC0000123, ICIC0001234)"
-                      className={`${isElderMode ? "h-14 text-lg" : ""} bg-background/50`}
+                      className={`${
+                        isElderMode ? "h-14 text-lg" : ""
+                      } bg-background/50`}
                     />
-                    <p className={`text-muted-foreground ${isElderMode ? "text-base" : "text-sm"}`}>
+                    <p
+                      className={`text-muted-foreground ${
+                        isElderMode ? "text-base" : "text-sm"
+                      }`}
+                    >
                       Try: SBIN0001234, HDFC0000123, or ICIC0001234 for demo
                     </p>
                   </div>
@@ -299,9 +420,15 @@ export default function ConnectBankPage() {
                   {isVerifying ? (
                     <div className="text-center py-8">
                       <Loader2
-                        className={`mx-auto animate-spin text-primary ${isElderMode ? "h-16 w-16" : "h-12 w-12"}`}
+                        className={`mx-auto animate-spin text-primary ${
+                          isElderMode ? "h-16 w-16" : "h-12 w-12"
+                        }`}
                       />
-                      <p className={`mt-4 text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
+                      <p
+                        className={`mt-4 text-muted-foreground ${
+                          isElderMode ? "text-lg" : ""
+                        }`}
+                      >
                         Verifying your bank account details...
                       </p>
                     </div>
@@ -312,45 +439,91 @@ export default function ConnectBankPage() {
                           <div className="flex items-center mb-4">
                             <CheckCircle className="h-6 w-6 text-green-600 mr-2" />
                             <h3
-                              className={`font-semibold text-green-800 dark:text-green-200 ${isElderMode ? "text-xl" : "text-lg"}`}
+                              className={`font-semibold text-green-800 dark:text-green-200 ${
+                                isElderMode ? "text-xl" : "text-lg"
+                              }`}
                             >
                               Account Verified Successfully!
                             </h3>
                           </div>
                           <div className="space-y-3">
                             <div className="flex justify-between">
-                              <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>Bank:</span>
-                              <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`text-muted-foreground ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
+                                Bank:
+                              </span>
+                              <span
+                                className={`font-medium ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 {verificationResult.data.bankName}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>Branch:</span>
-                              <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`text-muted-foreground ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
+                                Branch:
+                              </span>
+                              <span
+                                className={`font-medium ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 {verificationResult.data.branchName}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`text-muted-foreground ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 Account Holder:
                               </span>
-                              <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`font-medium ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 {verificationResult.data.accountHolderName}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`text-muted-foreground ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 Account Type:
                               </span>
-                              <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`font-medium ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 {verificationResult.data.accountType}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`text-muted-foreground ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 Available Balance:
                               </span>
-                              <span className={`font-medium text-green-600 ${isElderMode ? "text-lg" : ""}`}>
+                              <span
+                                className={`font-medium text-green-600 ${
+                                  isElderMode ? "text-lg" : ""
+                                }`}
+                              >
                                 {verificationResult.data.balance}
                               </span>
                             </div>
@@ -360,44 +533,94 @@ export default function ConnectBankPage() {
                     ) : (
                       <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
                         <h3
-                          className={`font-semibold text-red-800 dark:text-red-200 mb-2 ${isElderMode ? "text-xl" : "text-lg"}`}
+                          className={`font-semibold text-red-800 dark:text-red-200 mb-2 ${
+                            isElderMode ? "text-xl" : "text-lg"
+                          }`}
                         >
                           Verification Failed
                         </h3>
-                        <p className={`text-red-700 dark:text-red-300 ${isElderMode ? "text-lg" : ""}`}>
+                        <p
+                          className={`text-red-700 dark:text-red-300 ${
+                            isElderMode ? "text-lg" : ""
+                          }`}
+                        >
                           {verificationResult.error}
                         </p>
                       </div>
                     )
                   ) : (
                     <div className="bg-card p-6 rounded-lg border border-border">
-                      <h3 className={`font-semibold text-foreground mb-4 ${isElderMode ? "text-xl" : "text-lg"}`}>
+                      <h3
+                        className={`font-semibold text-foreground mb-4 ${
+                          isElderMode ? "text-xl" : "text-lg"
+                        }`}
+                      >
                         Please verify your details:
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>Bank:</span>
-                          <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>{formData.bankName}</span>
+                          <span
+                            className={`text-muted-foreground ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
+                            Bank:
+                          </span>
+                          <span
+                            className={`font-medium ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
+                            {formData.bankName}
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
+                          <span
+                            className={`text-muted-foreground ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
                             Account Holder:
                           </span>
-                          <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>
+                          <span
+                            className={`font-medium ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
                             {formData.accountHolderName}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
+                          <span
+                            className={`text-muted-foreground ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
                             Account Number:
                           </span>
-                          <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>
+                          <span
+                            className={`font-medium ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
                             ****{formData.accountNumber.slice(-4)}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>IFSC Code:</span>
-                          <span className={`font-medium ${isElderMode ? "text-lg" : ""}`}>{formData.ifscCode}</span>
+                          <span
+                            className={`text-muted-foreground ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
+                            IFSC Code:
+                          </span>
+                          <span
+                            className={`font-medium ${
+                              isElderMode ? "text-lg" : ""
+                            }`}
+                          >
+                            {formData.ifscCode}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -409,13 +632,26 @@ export default function ConnectBankPage() {
                 <div className="space-y-6">
                   <div className="text-center">
                     <div className="bg-primary/10 p-6 rounded-full w-fit mx-auto mb-6">
-                      <CheckCircle className={`text-primary ${isElderMode ? "h-16 w-16" : "h-12 w-12"}`} />
+                      <CheckCircle
+                        className={`text-primary ${
+                          isElderMode ? "h-16 w-16" : "h-12 w-12"
+                        }`}
+                      />
                     </div>
-                    <h3 className={`font-semibold text-foreground mb-4 ${isElderMode ? "text-2xl" : "text-xl"}`}>
+                    <h3
+                      className={`font-semibold text-foreground mb-4 ${
+                        isElderMode ? "text-2xl" : "text-xl"
+                      }`}
+                    >
                       Account Connected Successfully!
                     </h3>
-                    <p className={`text-muted-foreground mb-8 ${isElderMode ? "text-lg" : ""}`}>
-                      Your bank account has been securely linked to SafePay. You can now start using all our features.
+                    <p
+                      className={`text-muted-foreground mb-8 ${
+                        isElderMode ? "text-lg" : ""
+                      }`}
+                    >
+                      Your bank account has been securely linked to SafePay. You
+                      can now start using all our features.
                     </p>
                   </div>
                 </div>
@@ -424,14 +660,28 @@ export default function ConnectBankPage() {
               {/* Security Reassurance */}
               <div className="mt-8 p-4 bg-primary/5 rounded-lg border border-primary/20">
                 <div className="flex items-start space-x-3">
-                  <Shield className={`text-primary flex-shrink-0 mt-1 ${isElderMode ? "h-6 w-6" : "h-5 w-5"}`} />
+                  <Shield
+                    className={`text-primary flex-shrink-0 mt-1 ${
+                      isElderMode ? "h-6 w-6" : "h-5 w-5"
+                    }`}
+                  />
                   <div>
-                    <h4 className={`font-medium text-foreground mb-2 ${isElderMode ? "text-lg" : ""}`}>
+                    <h4
+                      className={`font-medium text-foreground mb-2 ${
+                        isElderMode ? "text-lg" : ""
+                      }`}
+                    >
                       Your data is secure
                     </h4>
-                    <p className={`text-muted-foreground ${isElderMode ? "text-base" : "text-sm"}`}>
-                      We use bank-grade 256-bit encryption to protect your information. Your account details are never
-                      stored in plain text and are processed through secure, encrypted channels.
+                    <p
+                      className={`text-muted-foreground ${
+                        isElderMode ? "text-base" : "text-sm"
+                      }`}
+                    >
+                      We use bank-grade 256-bit encryption to protect your
+                      information. Your account details are never stored in
+                      plain text and are processed through secure, encrypted
+                      channels.
                     </p>
                   </div>
                 </div>
@@ -449,10 +699,19 @@ export default function ConnectBankPage() {
                   Previous
                 </Button>
                 <Button
-                  onClick={currentStep === 3 ? () => (window.location.href = "/send-money") : handleNextStep}
+                  onClick={
+                    currentStep === 3
+                      ? () => (window.location.href = "/send-money")
+                      : handleNextStep
+                  }
                   size={isElderMode ? "lg" : "default"}
                   className={isElderMode ? "text-lg px-6" : ""}
-                  disabled={isVerifying || (currentStep === 2 && verificationResult && !verificationResult.success)}
+                  disabled={
+                    isVerifying ||
+                    (currentStep === 2 &&
+                      verificationResult &&
+                      !verificationResult.success)
+                  }
                 >
                   {isVerifying ? (
                     <>
@@ -474,5 +733,5 @@ export default function ConnectBankPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
