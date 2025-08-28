@@ -15,9 +15,10 @@ interface UndoTransactionModalProps {
     recipientName: string
   }
   isElderMode: boolean
+  t: any // translation object for current language
 }
 
-export function UndoTransactionModal({ isOpen, onClose, onUndo, transaction, isElderMode }: UndoTransactionModalProps) {
+export function UndoTransactionModal({ isOpen, onClose, onUndo, transaction, isElderMode, t }: UndoTransactionModalProps) {
   const [countdown, setCountdown] = useState(5)
 
   useEffect(() => {
@@ -42,7 +43,9 @@ export function UndoTransactionModal({ isOpen, onClose, onUndo, transaction, isE
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className={`max-w-md ${isElderMode ? "max-w-lg" : ""}`}>
         <DialogHeader>
-          <DialogTitle className={`text-center ${isElderMode ? "text-2xl" : "text-xl"}`}>Undo Transaction</DialogTitle>
+          <DialogTitle className={`text-center ${isElderMode ? "text-2xl" : "text-xl"}`}>
+            {t.undoTransactionTitle || "Undo Transaction"}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
@@ -57,15 +60,15 @@ export function UndoTransactionModal({ isOpen, onClose, onUndo, transaction, isE
           <div className="text-center space-y-4">
             <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/20">
               <p className={`text-foreground font-medium ${isElderMode ? "text-xl" : "text-lg"}`}>
-                Undo payment of ₹{transaction.amount}
+                {t.undoPaymentText || "Undo payment of"} ₹{transaction.amount}
               </p>
               <p className={`text-primary font-bold ${isElderMode ? "text-2xl" : "text-xl"}`}>
-                to {transaction.recipientName}
+                {t.toText || "to"} {transaction.recipientName}
               </p>
             </div>
 
             <p className={`text-muted-foreground ${isElderMode ? "text-lg" : ""}`}>
-              This will reverse the transaction and refund the amount to your account
+              {t.undoDescription || "This will reverse the transaction and refund the amount to your account"}
             </p>
           </div>
 
@@ -75,7 +78,9 @@ export function UndoTransactionModal({ isOpen, onClose, onUndo, transaction, isE
               <Clock className="h-4 w-4" />
               <span className={`font-bold ${isElderMode ? "text-xl" : "text-lg"}`}>{countdown}</span>
             </div>
-            <p className={`text-muted-foreground ${isElderMode ? "text-lg" : "text-sm"}`}>seconds remaining to undo</p>
+            <p className={`text-muted-foreground ${isElderMode ? "text-lg" : "text-sm"}`}>
+              {t.secondsRemaining || "seconds remaining to undo"}
+            </p>
           </div>
 
           {/* Action Buttons */}
@@ -86,11 +91,11 @@ export function UndoTransactionModal({ isOpen, onClose, onUndo, transaction, isE
               className="flex-1 bg-transparent"
               size={isElderMode ? "lg" : "default"}
             >
-              Keep Transaction
+              {t.keepTransaction || "Keep Transaction"}
             </Button>
             <Button onClick={onUndo} variant="destructive" className="flex-1" size={isElderMode ? "lg" : "default"}>
               <RotateCcw className="mr-2 h-4 w-4" />
-              Undo Now
+              {t.undoNow || "Undo Now"}
             </Button>
           </div>
         </div>
