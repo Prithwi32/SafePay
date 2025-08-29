@@ -217,8 +217,6 @@ export function VoiceConfirmationModal({
               )}
             </div>
           </div>
-
-          {/* Confirmation Text */}
           <div className="text-center space-y-4">
             <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/20">
               <p
@@ -255,14 +253,12 @@ export function VoiceConfirmationModal({
             )}
           </div>
 
-          {/* Countdown */}
           <div className="text-center">
             {/* <p className={`text-muted-foreground ${isElderMode ? "text-lg" : "text-sm"}`}>
               {t.autoCancel(countdown)}
             </p> */}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex space-x-4">
             <Button
               variant="outline"
