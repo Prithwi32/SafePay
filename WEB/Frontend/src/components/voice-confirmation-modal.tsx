@@ -179,112 +179,133 @@ export function VoiceConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
-      <DialogContent className={`max-w-md ${isElderMode ? "max-w-lg" : ""}`}>
-        <DialogHeader>
-          <DialogTitle
-            className={`text-center ${isElderMode ? "text-2xl" : "text-xl"}`}
-          >
-            {t.title}
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-6 py-4">
-          {/* Voice Animation */}
-          <div className="flex justify-center">
-            <div
-              className={`bg-primary/10 p-6 rounded-full ${
-                isListening || isPlaying ? "animate-pulse" : ""
-              }`}
+      <DialogContent
+        className={`max-w-md ${isElderMode ? "max-w-lg" : ""}`}
+        style={{
+          maxWidth: "55vw",
+          maxHeight: "80vh",
+          overflow: "auto",
+          boxSizing: "border-box",
+          wordBreak: "break-word",
+          whiteSpace: "pre-line",
+          padding: "1.5rem",
+          borderRadius: "1.25rem",
+        }}
+      >
+        <div
+          style={{
+            maxHeight: "60vh",
+            overflowY: "auto",
+            wordBreak: "break-word",
+            whiteSpace: "pre-line",
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle
+              className={`text-center ${isElderMode ? "text-2xl" : "text-xl"}`}
             >
-              {isPlaying ? (
-                <Volume2
-                  className={`text-primary ${
-                    isElderMode ? "h-16 w-16" : "h-12 w-12"
+              {t.title}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            {/* Voice Animation */}
+            <div className="flex justify-center">
+              <div
+                className={`bg-primary/10 p-6 rounded-full ${
+                  isListening || isPlaying ? "animate-pulse" : ""
+                }`}
+              >
+                {isPlaying ? (
+                  <Volume2
+                    className={`text-primary ${
+                      isElderMode ? "h-16 w-16" : "h-12 w-12"
+                    }`}
+                  />
+                ) : isListening ? (
+                  <Mic
+                    className={`text-primary ${
+                      isElderMode ? "h-16 w-16" : "h-12 w-12"
+                    }`}
+                  />
+                ) : (
+                  <MicOff
+                    className={`text-muted-foreground ${
+                      isElderMode ? "h-16 w-16" : "h-12 w-12"
+                    }`}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/20">
+                <p
+                  className={`text-foreground font-medium ${
+                    isElderMode ? "text-xl" : "text-lg"
                   }`}
-                />
-              ) : isListening ? (
-                <Mic
-                  className={`text-primary ${
-                    isElderMode ? "h-16 w-16" : "h-12 w-12"
+                >
+                  {t.sending(amount, recipientName)}
+                </p>
+                <p
+                  className={`text-primary font-bold ${
+                    isElderMode ? "text-2xl" : "text-xl"
                   }`}
-                />
-              ) : (
-                <MicOff
-                  className={`text-muted-foreground ${
-                    isElderMode ? "h-16 w-16" : "h-12 w-12"
-                  }`}
-                />
+                >
+                  {recipientName}
+                </p>
+              </div>
+
+              <p
+                className={`text-muted-foreground ${
+                  isElderMode ? "text-lg" : ""
+                }`}
+              >
+                {isPlaying ? t.playing : t.confirmMessage}
+              </p>
+
+              {isListening && (
+                <div className="flex items-center justify-center space-x-2 text-primary">
+                  <Volume2 className="h-4 w-4 animate-pulse" />
+                  <span className={isElderMode ? "text-lg" : ""}>
+                    Listening...
+                  </span>
+                </div>
               )}
             </div>
-          </div>
-          <div className="text-center space-y-4">
-            <div className="bg-destructive/10 p-4 rounded-lg border border-destructive/20">
-              <p
-                className={`text-foreground font-medium ${
-                  isElderMode ? "text-xl" : "text-lg"
-                }`}
-              >
-                {t.sending(amount, recipientName)}
-              </p>
-              <p
-                className={`text-primary font-bold ${
-                  isElderMode ? "text-2xl" : "text-xl"
-                }`}
-              >
-                {recipientName}
-              </p>
+
+            <div className="text-center">
+              {/* <p className={`text-muted-foreground ${isElderMode ? "text-lg" : "text-sm"}`}>
+                {t.autoCancel(countdown)}
+              </p> */}
             </div>
 
-            <p
-              className={`text-muted-foreground ${
-                isElderMode ? "text-lg" : ""
-              }`}
-            >
-              {isPlaying ? t.playing : t.confirmMessage}
-            </p>
-
-            {isListening && (
-              <div className="flex items-center justify-center space-x-2 text-primary">
-                <Volume2 className="h-4 w-4 animate-pulse" />
-                <span className={isElderMode ? "text-lg" : ""}>
-                  Listening...
-                </span>
-              </div>
-            )}
-          </div>
-
-          <div className="text-center">
-            {/* <p className={`text-muted-foreground ${isElderMode ? "text-lg" : "text-sm"}`}>
-              {t.autoCancel(countdown)}
-            </p> */}
-          </div>
-
-          <div className="flex space-x-4">
-            <Button
-              variant="outline"
-              onClick={handleCancel}
-              className="flex-1 bg-transparent"
-              size={isElderMode ? "lg" : "default"}
-            >
-              {t.cancel}
-            </Button>
-            <Button
-              onClick={speakConfirmation}
-              variant="secondary"
-              className="flex-1"
-              size={isElderMode ? "lg" : "default"}
-              disabled={isPlaying}
-            >
-              <Play className="mr-2 h-4 w-4" />
-              {isPlaying ? t.playing : t.replay}
-            </Button>
-            <Button
-              onClick={onConfirm}
-              className="flex-1"
-              size={isElderMode ? "lg" : "default"}
-            >
-              {t.confirm}
-            </Button>
+            <div className="flex space-x-4">
+              <Button
+                variant="outline"
+                onClick={handleCancel}
+                className="flex-1 bg-transparent"
+                size={isElderMode ? "lg" : "default"}
+              >
+                {t.cancel}
+              </Button>
+              <Button
+                onClick={speakConfirmation}
+                variant="secondary"
+                className="flex-1"
+                size={isElderMode ? "lg" : "default"}
+                disabled={isPlaying}
+              >
+                <Play className="mr-2 h-4 w-4" />
+                {isPlaying ? t.playing : t.replay}
+              </Button>
+              <Button
+                onClick={onConfirm}
+                className="flex-1"
+                size={isElderMode ? "lg" : "default"}
+              >
+                {t.confirm}
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
